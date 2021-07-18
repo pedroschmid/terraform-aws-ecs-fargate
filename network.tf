@@ -66,3 +66,40 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
   subnet_id      = element(aws_subnet.private.*.id, count.index)
 }
+
+# Internet gateway
+resource "aws_internet_gateway" "this" {
+  vpc_id = aws_vpc.this.id
+
+  tags = { "Name" = "igw-${var.ENVIRONMENT}" }
+}
+
+# Elastic IP
+resource "aws_eip" "this" {
+  vpc        = true
+  depends_on = [aws_internet_gateway.this]
+
+  tags = { "Name" = "eip-${var.ENVIRONMENT}" }
+}
+
+# NAT gateway
+resource "aws_nat_gateway" "this" {
+  allocation_id = aws_eip.this.id
+  subnet_id     = element(aws_subnet.public.*.id, 0)
+  depends_on    = [aws_eip.this]
+
+  tags = { "Name" = "nat-${var.ENVIRONMENT}" }
+}
+
+# Routes
+resource "aws_route" "igw" {
+  route_table_id         = aws_route_table.public.id
+  gateway_id             = aws_internet_gateway.this.id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route" "nat" {
+  route_table_id         = aws_route_table.private.id
+  nat_gateway_id         = aws_nat_gateway.this.id
+  destination_cidr_block = "0.0.0.0/0"
+}
