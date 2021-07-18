@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "rails" {
 }
 
 # ECS service
-resource "aws_ecs_service" "this" {
+resource "aws_ecs_service" "rails" {
   name            = "rails-ecs-service-${var.ENVIRONMENT}"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.rails.arn
