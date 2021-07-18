@@ -6,6 +6,7 @@ resource "aws_cloudwatch_log_group" "rails" {
   retention_in_days = 30
 }
 
+# Cloudwatch log stream
 resource "aws_cloudwatch_log_stream" "rails" {
   name           = "rails-log-stream-${var.ENVIRONMENT}"
   log_group_name = aws_cloudwatch_log_group.rails.name
