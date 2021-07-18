@@ -15,21 +15,25 @@
     ],
     "environment": [
       {
-        "name": "RAILS_ENV",
-        "value": "${ENVIRONMENT}"
+        "name": "DATABASE_NAME",
+        "value": "${DATABASE_NAME}"
       },
       {
-        "name": "DATABASE_URL",
-        "value": "${DATABASE_URL}"
+        "name": "DATABASE_USERNAME",
+        "value": "${DATABASE_USERNAME}"
       },
       {
-        "name": "PORT",
-        "value": "3000"
+        "name": "DATABASE_PASSWORD",
+        "value": "${DATABASE_PASSWORD}"
       },
       {
-        "name": "RAILS_LOG_TO_STDOUT",
-        "value": "true"
+        "name": "DATABASE_HOST",
+        "value": "${DATABASE_HOST}"
       },
+      {
+        "name": "DATABASE_PORT",
+        "value": "5432"
+      }
     ],
     "logConfiguration": {
       "logDriver": "awslogs",
