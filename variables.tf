@@ -1,8 +1,10 @@
+# APPLICATION #
 variable "ENVIRONMENT" {
   type        = string
   description = "Enviroment of infrastructure"
 }
 
+# AWS
 variable "REGION" {
   type        = string
   description = "Region where aws will create resources"
