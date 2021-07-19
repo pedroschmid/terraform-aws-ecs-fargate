@@ -25,3 +25,15 @@ resource "aws_iam_instance_profile" "ecs" {
   path = "/"
   role = aws_iam_role.ecs_host_role.name
 }
+
+
+resource "aws_iam_role" "ecs_execution_role" {
+  name               = "ecs_task_execution_role"
+  assume_role_policy = file("policies/ecs-task-execution-role.json")
+}
+
+resource "aws_iam_role_policy" "ecs_execution_role_policy" {
+  name   = "ecs_execution_role_policy"
+  policy = file("policies/ecs-execution-role-policy.json")
+  role   = aws_iam_role.ecs_execution_role.id
+}

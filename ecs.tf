@@ -22,17 +22,24 @@ data "template_file" "rails" {
 
 # ECS task definition
 resource "aws_ecs_task_definition" "rails" {
-  family                = "rails"
-  container_definitions = data.template_file.rails.rendered
-  depends_on            = [aws_db_instance.this]
+  family                   = "rails"
+  container_definitions    = data.template_file.rails.rendered
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_execution_role.arn
+
+  depends_on = [aws_db_instance.this]
 }
 
 # ECS service
 resource "aws_ecs_service" "rails" {
   name            = "rails-ecs-service-${var.ENVIRONMENT}"
+  launch_type     = "FARGATE"
   cluster         = aws_ecs_cluster.this.id
   task_definition = aws_ecs_task_definition.rails.arn
-  iam_role        = aws_iam_role.ecs_service_role.arn
   desired_count   = 1
 
   depends_on = [
@@ -44,5 +51,10 @@ resource "aws_ecs_service" "rails" {
     target_group_arn = aws_alb_target_group.default.arn
     container_name   = "rails"
     container_port   = 3000
+  }
+
+  network_configuration {
+    security_groups = [aws_security_group.alb.id, aws_security_group.ecs.id, aws_security_group.rds.id]
+    subnets         = aws_subnet.private.*.id
   }
 }

@@ -3,13 +3,13 @@
     "name": "rails",
     "image": "${IMAGE}",
     "essential": true,
-    "cpu": 10,
+    "cpu": 256,
     "memory": 512,
     "links": [],
     "portMappings": [
       {
         "containerPort": 3000,
-        "hostPort": 0,
+        "hostPort": 3000,
         "protocol": "tcp"
       }
     ],
