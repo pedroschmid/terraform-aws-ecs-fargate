@@ -9,9 +9,9 @@ resource "aws_lb" "this" {
   subnets            = aws_subnet.public.*.id
 }
 
-# Target group default
-resource "aws_alb_target_group" "default" {
-  name        = "default-tg-${var.ENVIRONMENT}"
+# Rails target group
+resource "aws_alb_target_group" "rails" {
+  name        = "rails-tg-${var.ENVIRONMENT}"
   port        = 3000
   protocol    = "HTTP"
   target_type = "ip"
@@ -33,10 +33,10 @@ resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port              = "80"
   protocol          = "HTTP"
-  depends_on        = [aws_alb_target_group.default]
+  depends_on        = [aws_alb_target_group.rails]
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.default.arn
+    target_group_arn = aws_alb_target_group.rails.arn
   }
 }
