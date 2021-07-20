@@ -1,11 +1,11 @@
 # ECS #
 
-# ECS cluster
+# ECS cluster #
 resource "aws_ecs_cluster" "this" {
   name = "ecs-cluster-${var.ENVIRONMENT}"
 }
 
-# Template file for rails
+# Template file for rails #
 data "template_file" "rails" {
   template = file("templates/rails.json.tpl")
 
@@ -20,7 +20,7 @@ data "template_file" "rails" {
   }
 }
 
-# ECS task definition
+# ECS task definition #
 resource "aws_ecs_task_definition" "rails" {
   family                   = "rails"
   container_definitions    = data.template_file.rails.rendered
@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "rails" {
   depends_on = [aws_db_instance.this]
 }
 
-# ECS service
+# ECS service #
 resource "aws_ecs_service" "rails" {
   name            = "rails-ecs-service-${var.ENVIRONMENT}"
   launch_type     = "FARGATE"

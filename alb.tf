@@ -1,6 +1,6 @@
 # ALB #
 
-# ALB itself
+# ALB itself #
 resource "aws_lb" "this" {
   name               = "alb-${var.ENVIRONMENT}"
   load_balancer_type = "application"
@@ -9,7 +9,7 @@ resource "aws_lb" "this" {
   subnets            = aws_subnet.public.*.id
 }
 
-# Rails target group
+# Rails target group #
 resource "aws_alb_target_group" "rails" {
   name        = "rails-tg-${var.ENVIRONMENT}"
   port        = 3000
@@ -28,7 +28,7 @@ resource "aws_alb_target_group" "rails" {
   }
 }
 
-# ALB listener
+# ALB listener #
 resource "aws_alb_listener" "this" {
   load_balancer_arn = aws_lb.this.arn
   port              = "80"

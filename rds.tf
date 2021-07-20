@@ -1,12 +1,12 @@
 # RDS #
 
-# RDS subnet group
+# RDS subnet group #
 resource "aws_db_subnet_group" "this" {
   name       = "main"
   subnet_ids = aws_subnet.private.*.id
 }
 
-# RDS instance
+# RDS instance #
 resource "aws_db_instance" "this" {
   identifier = "rds-${var.ENVIRONMENT}"
 
@@ -20,13 +20,13 @@ resource "aws_db_instance" "this" {
   backup_retention_period = 7
   skip_final_snapshot     = true
 
-  # Credentials
+  # Credentials #
   name     = var.DATABASE_NAME
   username = var.DATABASE_USERNAME
   password = var.DATABASE_PASSWORD
   port     = "5432"
 
-  # Network
+  # Network #
   vpc_security_group_ids = [aws_security_group.rds.id]
   db_subnet_group_name   = aws_db_subnet_group.this.name
   multi_az               = false
