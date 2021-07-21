@@ -4,7 +4,7 @@ variable "ENVIRONMENT" {
   description = "Enviroment of infrastructure"
 }
 
-# AWS
+# AWS #
 variable "AVAILABILITY_ZONES" {
   type        = list(string)
   description = "AWS availability zones"
@@ -46,7 +46,7 @@ variable "PRIVATE_SUBNETS_CIDR" {
   description = "Private subnet cidr values"
 }
 
-# RDS
+# RDS #
 variable "DATABASE_NAME" {
   type        = string
   description = "RDS database name"
@@ -60,4 +60,10 @@ variable "DATABASE_USERNAME" {
 variable "DATABASE_PASSWORD" {
   type        = string
   description = "RDS database password"
+}
+
+# CODEPIPELINE #
+variable "GITHUB_OAUTH_TOKEN" {
+  type        = string
+  description = "Github OAuth token"
 }

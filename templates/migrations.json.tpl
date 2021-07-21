@@ -1,18 +1,9 @@
 [
   {
-    "name": "rails",
+    "name": "migrations",
     "image": "${ECR_REPOSITORY}",
-    "essential": true,
-    "cpu": 256,
-    "memory": 512,
-    "links": [],
-    "portMappings": [
-      {
-        "containerPort": 3000,
-        "hostPort": 3000,
-        "protocol": "tcp"
-      }
-    ],
+    "command": ["bundle", "exec", "rake", "db:migrate"],
+    "memory": 300,
     "environment": [
       {
         "name": "RAILS_ENV",
@@ -38,14 +29,6 @@
         "name": "DATABASE_PORT",
         "value": "5432"
       }
-    ],
-    "logConfiguration": {
-      "logDriver": "awslogs",
-      "options": {
-        "awslogs-region": "${AWS_REGION}",
-        "awslogs-group": "rails-log-group-${ENVIRONMENT}",
-        "awslogs-stream-prefix": "rails-log-stream-${ENVIRONMENT}"
-      }
-    }
+    ]
   }
 ]

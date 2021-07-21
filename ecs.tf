@@ -10,20 +10,48 @@ data "template_file" "rails" {
   template = file("templates/rails.json.tpl")
 
   vars = {
-    IMAGE             = aws_ecr_repository.rails.repository_url
+    ECR_REPOSITORY    = aws_ecr_repository.rails.repository_url
     DATABASE_HOST     = aws_db_instance.this.address
     DATABASE_NAME     = var.DATABASE_NAME
     DATABASE_USERNAME = var.DATABASE_USERNAME
     DATABASE_PASSWORD = var.DATABASE_PASSWORD
-    REGION            = var.REGION
+    AWS_REGION        = var.REGION
     ENVIRONMENT       = var.ENVIRONMENT
   }
 }
 
-# ECS task definition #
+# Template file for DB migration #
+data "template_file" "migrations" {
+  template = file("templates/migrations.json.tpl")
+
+  vars = {
+    ECR_REPOSITORY    = aws_ecr_repository.rails.repository_url
+    DATABASE_HOST     = aws_db_instance.this.address
+    DATABASE_NAME     = var.DATABASE_NAME
+    DATABASE_USERNAME = var.DATABASE_USERNAME
+    DATABASE_PASSWORD = var.DATABASE_PASSWORD
+    ENVIRONMENT       = var.ENVIRONMENT
+  }
+}
+
+# Rails task definition #
 resource "aws_ecs_task_definition" "rails" {
-  family                   = "rails"
+  family                   = "rails-${var.ENVIRONMENT}"
   container_definitions    = data.template_file.rails.rendered
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = "256"
+  memory                   = "512"
+  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_execution_role.arn
+
+  depends_on = [aws_db_instance.this]
+}
+
+# DB migration task definition #
+resource "aws_ecs_task_definition" "migrations" {
+  family                   = "migrations-${var.ENVIRONMENT}"
+  container_definitions    = data.template_file.migrations.rendered
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"

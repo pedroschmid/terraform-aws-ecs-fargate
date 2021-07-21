@@ -43,15 +43,40 @@ resource "aws_iam_role_policy" "ecs_execution_role_policy" {
 # CODEBUILD # 
 resource "aws_iam_role" "codebuild_role" {
   name               = "codebuild-role"
-  assume_role_policy = file("policies/codebuild/codebuild_role.json")
+  assume_role_policy = file("policies/codebuild/codebuild-role.json")
 }
 
 data "template_file" "codebuild_policy" {
-  template = file("policies/codebuild/codebuild_policy.json")
+  template = file("policies/codebuild/codebuild-policy.json")
+
+  vars = {
+    AWS_S3_BUCKET_ARN = aws_s3_bucket.source.arn
+  }
 }
 
 resource "aws_iam_role_policy" "codebuild_policy" {
   name   = "codebuild-policy"
   role   = aws_iam_role.codebuild_role.id
   policy = data.template_file.codebuild_policy.rendered
+}
+
+# CODEPIPELINE #
+resource "aws_iam_role" "codepipeline_role" {
+  name = "codepipeline-role"
+
+  assume_role_policy = file("policies/codepipeline/codepipeline-role.json")
+}
+
+data "template_file" "codepipeline_policy" {
+  template = file("policies/codepipeline/codepipeline.json")
+
+  vars = {
+    AWS_S3_BUCKET_ARN = aws_s3_bucket.source.arn
+  }
+}
+
+resource "aws_iam_role_policy" "codepipeline_policy" {
+  name   = "codepipeline-policy"
+  role   = aws_iam_role.codepipeline_role.id
+  policy = data.template_file.codepipeline_policy.rendered
 }
