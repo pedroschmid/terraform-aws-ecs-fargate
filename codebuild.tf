@@ -5,13 +5,13 @@ data "template_file" "buildspec" {
   template = file("buildspec/rails.yml")
 
   vars = {
-    ECR_REPOSITORY   = aws_ecr_repository.rails.repository_url
-    ECS_CLUSTER_NAME = aws_ecs_cluster.this.name
-    ECS_SERVICE_NAME = aws_ecs_service.rails.name
-    PRIVATE_SUBNET_ID = element(aws_subnet.private.*.id, 0)
-    SECURITY_GROUP_IDS = join(",", [aws_security_group.alb.id, aws_security_group.ecs.id, aws_security_group.rds.id])
-    AWS_REGION       = var.REGION
-    ENVIRONMENT      = var.ENVIRONMENT
+    ECR_REPOSITORY             = aws_ecr_repository.rails.repository_url
+    ECS_SERVICE_NAME           = aws_ecs_service.rails.name
+    ECS_TASK_DEFINITION_FAMILY = aws_ecs_task_definition.migrations.family
+    PRIVATE_SUBNET_ID          = element(aws_subnet.private.*.id, 0)
+    SECURITY_GROUP_IDS         = join(",", [aws_security_group.alb.id, aws_security_group.ecs.id, aws_security_group.rds.id])
+    AWS_REGION                 = var.REGION
+    ENVIRONMENT                = var.ENVIRONMENT
   }
 }
 

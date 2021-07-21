@@ -24,6 +24,6 @@ phases:
       - docker push $REPOSITORY_URI:$IMAGE_TAG
       - echo Writing image definitions file...
       - printf '[{"name":"web","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > build-output.json
-      - aws ecs run-task --launch-type FARGATE --cluster ${ECS_CLUSTER_NAME} --task-definition migrations-development --network-configuration "awsvpcConfiguration={subnets=[${PRIVATE_SUBNET_ID}],securityGroups=[${SECURITY_GROUP_IDS}]}" --region ${AWS_REGION}
+      - aws ecs run-task --launch-type FARGATE --cluster ${ECS_CLUSTER_NAME} --task-definition ${ECS_TASK_DEFINITION_FAMILY} --network-configuration "awsvpcConfiguration={subnets=[${PRIVATE_SUBNET_ID}],securityGroups=[${SECURITY_GROUP_IDS}]}" --region ${AWS_REGION}
 artifacts:
   files: build-output.json
